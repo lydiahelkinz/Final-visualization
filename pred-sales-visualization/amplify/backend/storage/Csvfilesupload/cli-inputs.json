@@ -1,0 +1,14 @@
+{
+  "resourceName": "Csvfilesupload",
+  "policyUUID": "4d576af2",
+  "bucketName": "finalvisualization8e841b85a77f49f282117d1ef3b7f",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
