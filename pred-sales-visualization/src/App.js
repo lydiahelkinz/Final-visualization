@@ -22,7 +22,9 @@ function App({ signOut, user }  ) {
   const [fileStatus, setFileStatus] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [root, setRoot] = useState("");
-  
+  const [uploading, setUploading] = useState(false);
+  const [showUploadMessage, setShowUploadMessage] = useState(false);
+
 
   const uploadFile = async () => {
     console.log(user);
@@ -40,7 +42,12 @@ function App({ signOut, user }  ) {
       console.log("File uploaded successfully:", result);
     } catch (error) {
       console.error("Error uploading file:", error);
-    }
+    } finally {
+    setUploading(true);
+    setShowUploadMessage(true); // Show the "Please wait" message
+    setUploading(false);
+    setTimeout(() => setShowUploadMessage(false), 10000); // Hide the "Please wait" message after 5 seconds
+  }
   };
   
   
@@ -175,8 +182,11 @@ console.error(e)
         <Button onClick={uploadFile}>Upload file</Button>
       </div>
       {showSuccessMessage && <div>File uploaded successfully</div>}
+      {showUploadMessage && (
+          <div>Please wait a few seconds. An email will be sent to you to view the results on our application.</div>
+        )}
 
-      {/* {fileStatus ? "File uploaded successfully" : ""} */}
+      
                 </TabPanel>
              
             </TabView>
