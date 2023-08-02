@@ -27,6 +27,7 @@ function App({ signOut, user }  ) {
   const [errorMessage, setErrorMessage] = useState("");
 
   var err = "";
+  
 
   const uploadFile = async () => {
     console.log(user);
