@@ -50,8 +50,7 @@ function App({ signOut, user }  ) {
       setFileStatus(true);
       console.log("File uploaded successfully:", result);
     } catch (error) {
-      console.error("Error:", error);
-      alert(error);
+      console.error("Error:", err);
     } finally {
       if (err === ""){
         setUploading(true);
