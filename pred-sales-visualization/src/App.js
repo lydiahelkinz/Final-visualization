@@ -24,15 +24,22 @@ function App({ signOut, user }  ) {
   const [root, setRoot] = useState("");
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
 
   const uploadFile = async () => {
     console.log(user);
     try {
+      if (fileData.type !== "text/csv") {
+        setErrorMessage("Invalid file format. Please upload a CSV file.");
+        return;
+      }
+  
       const fileName = `${user.username}-${Math.floor(Date.now() / 1000)}#${user.attributes.email}.csv`;
       const result = await Storage.put(fileName, fileData, {
         contentType: fileData.type,
       });
+  
       // Show the success message
       setShowSuccessMessage(true); 
       // Hide the message after 3 seconds
@@ -43,12 +50,15 @@ function App({ signOut, user }  ) {
     } catch (error) {
       console.error("Error uploading file:", error);
     } finally {
-    setUploading(true);
-    setShowUploadMessage(true); // Show the "Please wait" message
-    setUploading(false);
-    setTimeout(() => setShowUploadMessage(false), 10000); // Hide the "Please wait" message after 5 seconds
-  }
+      if (fileData.type === "text/csv") {
+        setUploading(true);
+        setShowUploadMessage(true); // Show the "Please wait" message
+        setUploading(false);
+        setTimeout(() => setShowUploadMessage(false), 10000); // Hide the "Please wait" message after 10 seconds
+      }
+    }
   };
+  
   
   
   function processStorageList(response) {
@@ -181,6 +191,7 @@ console.error(e)
       <div>
         <Button onClick={uploadFile}>Upload file</Button>
       </div>
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
       {showSuccessMessage && <div>File uploaded successfully</div>}
       {showUploadMessage && (
           <div>Please wait a few seconds. An email will be sent to you to view the results on our application.</div>
