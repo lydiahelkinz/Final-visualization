@@ -26,20 +26,22 @@ function App({ signOut, user }  ) {
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  var err = "";
 
   const uploadFile = async () => {
     console.log(user);
     try {
+
       if (fileData.type !== "text/csv") {
-        setErrorMessage("Invalid file format. Please upload a CSV file.");
-        return;
+        err = "Invalid file format. Please upload a CSV file."
+        setErrorMessage(err);
+        throw new Error(err);
       }
-  
+
       const fileName = `${user.username}-${Math.floor(Date.now() / 1000)}#${user.attributes.email}.csv`;
       const result = await Storage.put(fileName, fileData, {
         contentType: fileData.type,
       });
-  
       // Show the success message
       setShowSuccessMessage(true); 
       // Hide the message after 3 seconds
@@ -48,17 +50,17 @@ function App({ signOut, user }  ) {
       setFileStatus(true);
       console.log("File uploaded successfully:", result);
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error:", error);
+      alert(error);
     } finally {
-      if (fileData.type === "text/csv") {
+      if (err === ""){
         setUploading(true);
         setShowUploadMessage(true); // Show the "Please wait" message
         setUploading(false);
-        setTimeout(() => setShowUploadMessage(false), 10000); // Hide the "Please wait" message after 10 seconds
+        setTimeout(() => setShowUploadMessage(false), 10000); // Hide the "Please wait" message after 5 seconds
       }
-    }
+  }
   };
-  
   
   
   function processStorageList(response) {
@@ -141,7 +143,7 @@ function App({ signOut, user }  ) {
       if (node.key.endsWith(".png")) {
         try{
         console.log(node)
-       
+      
         const res= await Storage.get("",{bucket:"output-sales-pred",customPrefix: {public: `${user.username}/${node.key}`},download: true});
         console.log(res)
 
@@ -177,7 +179,7 @@ console.error(e)
             <div className="flex align-items-center justify-content-center  font-bold border-round m-2">
             <Card title={image.label} header={ <img alt="please select png plot" src={image.url} />} >
     <p className="m-0">
-           </p>
+          </p>
 </Card>
             </div>
       
@@ -185,21 +187,28 @@ console.error(e)
                 </TabPanel>
                 <TabPanel header="Upload Csv Files">
                 <div>
-        <input type="file" onChange={(e) =>  setFileData(e.target.files[0])} />
+                <input type="file" onChange={(e) => setFileData(e.target.files[0])} />
       </div>
 
       <div>
         <Button onClick={uploadFile}>Upload file</Button>
+        <br />
+        <br />
       </div>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div style={{ color: 'red' }} className="error-message">{errorMessage}</div>}
       {showSuccessMessage && <div>File uploaded successfully</div>}
       {showUploadMessage && (
-          <div>Please wait a few seconds. An email will be sent to you to view the results on our application.</div>
+          <hr/>
+          & 
+          <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>
+          & 
+          <p>You will get an email in this concern in case you already subscribed to our notification server via the email you got after the registration</p>
+          &
+          <p>Otherwise, visit the website later to see the results.</p>
         )}
 
       
                 </TabPanel>
-             
             </TabView>
       
 
