@@ -211,7 +211,7 @@ console.error(e)
        <View>{displayWelcomePopUp && (
         <div className="popup-box">
           <div className="popup-message">
-            Please check your email address or spam folder to confirm your AWS subscription to receive notifications from our application.
+            Please check your email address or spam folder to confirm your AWS subscription to receive notifications from our application
           </div>
           <Button className="popup-button" onClick={closeWelcomePopUp}>
           Dismiss
