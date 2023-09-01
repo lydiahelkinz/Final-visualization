@@ -25,14 +25,12 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [isNewUser, setIsNewUser] = useState(false);
 
     
   
 
   const uploadFile = async () => {
-    
+
     console.log(user);
     try {
       if (!fileData) {
@@ -127,19 +125,7 @@ function App({ signOut, user }  ) {
   }
   
   
-  useEffect(() => {
-    const hasSeenPopup = localStorage.getItem("hasSeenPopup");
 
-    if (!hasSeenPopup && user && user.username) {
-      setIsNewUser(true);
-      localStorage.setItem("hasSeenPopup", "true");
-    }
-  }, [user]);
-
-  const closePopup = () => {
-    setIsNewUser(false);
-    localStorage.setItem("hasSeenPopup", "true");
-  };
   
 
   async function listObjectsFromS3(folderName) {
@@ -192,12 +178,6 @@ console.error(e)
       <div>
       <h1>Hello {user.username}</h1>
       <Button onClick={signOut}>Sign out</Button>
-      {isNewUser && (
-        <Popup
-          message="Welcome to our app! This is your first visit."
-          onClose={closePopup}
-        />
-      )}
       </div>
       <TabView>
                 <TabPanel header="Show images">
