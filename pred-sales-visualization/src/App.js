@@ -207,17 +207,18 @@ console.error(e)
       <div>
       <h1>Welcome to our application,<span className="blue-text">{user.username}!</span></h1>
       <Button onClick={signOut}>Sign out</Button>
-       
-      {displayWelcomePopUp && (
+      <h1></h1>
+       <View>{displayWelcomePopUp && (
         <div className="popup-box">
-          <h2 className="popup-message">
+          <div className="popup-message">
             Please check your email address or spam folder to confirm your AWS subscription to receive notifications from our application.
-          </h2>
-          <button className="popup-button" onClick={closeWelcomePopUp}>
+          </div>
+          <Button className="popup-button" onClick={closeWelcomePopUp}>
           Dismiss
-          </button>
+          </Button>
         </div>
-      )}
+      )}</View>
+      
 
 
       
