@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import { Button } from 'primereact/button';
-import { useState,useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { withAuthenticator, View,AmplifyS3Image } from "@aws-amplify/ui-react";
 import { Tree } from 'primereact/tree';
 import "@aws-amplify/ui-react/styles.css";
@@ -14,6 +14,15 @@ import { TabView, TabPanel } from 'primereact/tabview';
 
 import { Storage } from "aws-amplify";
 
+function Popup({ message, onClose }) {
+  return (
+    <div className="popup">
+      <p>{message}</p>
+      <button onClick={onClose}>Close</button>
+    </div>
+  );
+}
+
 function App({ signOut, user }  ) {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
@@ -25,16 +34,25 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [showPopup, setShowPopup] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
+  
 
   const uploadFile = async () => {
     console.log(user);
     try {
-      if (fileData.type !== "text/csv") {
-        setErrorMessage("Invalid file format. Please upload a CSV file.");
+      if (!fileData) {
+        setErrorMessage("Please select a file before uploading.");
+        setTimeout(() => setErrorMessage(""), 5000);
         return;
       }
   
+      if (!fileData.type || fileData.type !== "text/csv") {
+        setErrorMessage("Invalid file format. Please upload a CSV file.");
+        setTimeout(() => setErrorMessage(""), 10000);
+        return;
+      }
+      
       const fileName = `${user.username}-${Math.floor(Date.now() / 1000)}#${user.attributes.email}.csv`;
       const result = await Storage.put(fileName, fileData, {
         contentType: fileData.type,
@@ -50,7 +68,7 @@ function App({ signOut, user }  ) {
     } catch (error) {
       console.error("Error uploading file:", error);
     } finally {
-      if (fileData.type === "text/csv") {
+      if (fileData && fileData.type === "text/csv") {
         setUploading(true);
         setShowUploadMessage(true); // Show the "Please wait" message
         setUploading(false);
@@ -117,7 +135,19 @@ function App({ signOut, user }  ) {
   }
   
   
-  
+  useEffect(() => {
+    const hasSeenPopup = localStorage.getItem("hasSeenPopup");
+
+    if (!hasSeenPopup && user && user.username) {
+      setIsNewUser(true);
+      localStorage.setItem("hasSeenPopup", "true");
+    }
+  }, [user]);
+
+  const closePopup = () => {
+    setIsNewUser(false);
+    localStorage.setItem("hasSeenPopup", "true");
+  };
   
 
   async function listObjectsFromS3(folderName) {
@@ -169,6 +199,12 @@ console.error(e)
       <div>
       <h1>Hello {user.username}</h1>
       <Button onClick={signOut}>Sign out</Button>
+      {isNewUser && (
+        <Popup
+          message="Welcome to our app! This is your first visit."
+          onClose={closePopup}
+        />
+      )}
       </div>
       <TabView>
                 <TabPanel header="Show images">
@@ -185,7 +221,7 @@ console.error(e)
                 </TabPanel>
                 <TabPanel header="Upload Csv Files">
                 <div>
-        <input type="file" onChange={(e) =>  setFileData(e.target.files[0])} />
+                <input type="file" onChange={(e) => e.target.files && setFileData(e.target.files[0])} />
       </div>
 
       <div>
@@ -199,9 +235,8 @@ console.error(e)
 
       
                 </TabPanel>
-             
-            </TabView>
       
+            </TabView>
 
       
       
