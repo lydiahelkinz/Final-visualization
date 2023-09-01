@@ -204,15 +204,7 @@ console.error(e)
       </div>
       {errorMessage && <div style={{ color: 'red' }} className="error-message">{errorMessage}</div>}
       {showSuccessMessage && <div>File uploaded successfully</div>}
-      {showUploadMessage && (
-          <hr/>
-          & 
-          <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>
-          & 
-          <p>You will get an email in this concern in case you already subscribed to our notification server via the email you got after the registration</p>
-          &
-          <p>Otherwise, visit the website later to see the results.</p>
-        )}
+      {showUploadMessage && <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>}
 
       
                 </TabPanel>
