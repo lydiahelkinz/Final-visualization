@@ -34,13 +34,19 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+<<<<<<< HEAD
   const [showPopup, setShowPopup] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
   
+=======
+
+  var err = "";
+>>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
 
   const uploadFile = async () => {
     console.log(user);
     try {
+<<<<<<< HEAD
       if (!fileData) {
         setErrorMessage("Please select a file before uploading.");
         setTimeout(() => setErrorMessage(""), 5000);
@@ -53,11 +59,19 @@ function App({ signOut, user }  ) {
         return;
       }
       
+=======
+
+      if (fileData.type !== "text/csv") {
+        err = "Invalid file format. Please upload a CSV file."
+        setErrorMessage(err);
+        throw new Error(err);
+      }
+
+>>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
       const fileName = `${user.username}-${Math.floor(Date.now() / 1000)}#${user.attributes.email}.csv`;
       const result = await Storage.put(fileName, fileData, {
         contentType: fileData.type,
       });
-  
       // Show the success message
       setShowSuccessMessage(true); 
       // Hide the message after 3 seconds
@@ -66,17 +80,20 @@ function App({ signOut, user }  ) {
       setFileStatus(true);
       console.log("File uploaded successfully:", result);
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error:", err);
     } finally {
+<<<<<<< HEAD
       if (fileData && fileData.type === "text/csv") {
+=======
+      if (err === ""){
+>>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
         setUploading(true);
         setShowUploadMessage(true); // Show the "Please wait" message
         setUploading(false);
-        setTimeout(() => setShowUploadMessage(false), 10000); // Hide the "Please wait" message after 10 seconds
+        setTimeout(() => setShowUploadMessage(false), 10000); // Hide the "Please wait" message after 5 seconds
       }
-    }
+  }
   };
-  
   
   
   function processStorageList(response) {
@@ -171,7 +188,7 @@ function App({ signOut, user }  ) {
       if (node.key.endsWith(".png")) {
         try{
         console.log(node)
-       
+      
         const res= await Storage.get("",{bucket:"output-sales-pred",customPrefix: {public: `${user.username}/${node.key}`},download: true});
         console.log(res)
 
@@ -213,7 +230,7 @@ console.error(e)
             <div className="flex align-items-center justify-content-center  font-bold border-round m-2">
             <Card title={image.label} header={ <img alt="please select png plot" src={image.url} />} >
     <p className="m-0">
-           </p>
+          </p>
 </Card>
             </div>
       
@@ -221,20 +238,36 @@ console.error(e)
                 </TabPanel>
                 <TabPanel header="Upload Csv Files">
                 <div>
+<<<<<<< HEAD
                 <input type="file" onChange={(e) => e.target.files && setFileData(e.target.files[0])} />
+=======
+                <input type="file" onChange={(e) => setFileData(e.target.files[0])} />
+>>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
       </div>
 
       <div>
         <Button onClick={uploadFile}>Upload file</Button>
+        <br />
+        <br />
       </div>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div style={{ color: 'red' }} className="error-message">{errorMessage}</div>}
       {showSuccessMessage && <div>File uploaded successfully</div>}
       {showUploadMessage && (
-          <div>Please wait a few seconds. An email will be sent to you to view the results on our application.</div>
+          <hr/>
+          & 
+          <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>
+          & 
+          <p>You will get an email in this concern in case you already subscribed to our notification server via the email you got after the registration</p>
+          &
+          <p>Otherwise, visit the website later to see the results.</p>
         )}
 
       
                 </TabPanel>
+<<<<<<< HEAD
+=======
+            </TabView>
+>>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
       
             </TabView>
 
