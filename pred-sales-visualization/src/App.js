@@ -14,6 +14,8 @@ import { Storage } from "aws-amplify";
 
 
 
+
+
 function App({ signOut, user }  ) {
 
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -25,9 +27,9 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [displayWelcomePopUp, setDisplayWelcomePopUp] = useState(false);
 
-  const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
-
+  
 
     
   
@@ -165,6 +167,8 @@ console.error(e)
         }
       }
     }
+    
+
 
   
   
@@ -172,21 +176,51 @@ console.error(e)
     useEffect(() => {
       listObjectsFromS3("");
     
-      // Check if the user's email is not verified (first login)
-      if (!user.attributes.email_verified) {
-        setShowConfirmationMessage(true);
-      }
     }, []);
     
 
+    useEffect(() => {
+      // Récupérez le nom d'utilisateur actuel.
+      const username = user.username;
+  
+      // Vérifiez si l'utilisateur a déjà vu la pop-up de bienvenue.
+      const hasSeenWelcomePopUp = localStorage.getItem(`seenWelcomePopUp_${username}`);
+  
+      // Si l'utilisateur n'a pas encore vu la pop-up de bienvenue, affichez-la.
+      if (!hasSeenWelcomePopUp) {
+        setDisplayWelcomePopUp(true);
+  
+        // Marquez la pop-up comme vue pour cet utilisateur.
+        localStorage.setItem(`seenWelcomePopUp_${username}`, true);
+      }
+    }, [user]);
+    
+    const closeWelcomePopUp = () => {
+      setDisplayWelcomePopUp(false);
+    };
+    
 
   return (
     <View className="App">
       
       
       <div>
-      <h1>Hello {user.username}</h1>
+      <h1>Welcome to our application,<span className="blue-text">{user.username}!</span></h1>
       <Button onClick={signOut}>Sign out</Button>
+       
+      {displayWelcomePopUp && (
+        <div className="popup-box">
+          <h2 className="popup-message">
+            Please check your email address or spam folder to confirm your AWS subscription to receive notifications from our application.
+          </h2>
+          <button className="popup-button" onClick={closeWelcomePopUp}>
+          Dismiss
+          </button>
+        </div>
+      )}
+
+
+      
       </div>
       <TabView>
                 <TabPanel header="Show images">
@@ -214,7 +248,7 @@ console.error(e)
       {errorMessage && <div style={{ color: 'red' }} className="error-message">{errorMessage}</div>}
       {showSuccessMessage && <div>File uploaded successfully</div>}
       {showUploadMessage && <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>}
-      {showConfirmationMessage && (<div className="confirmation-message"><p>Please check your email or spam folder to confirm your subscription to AWS.</p></div>)}
+      
 
 
       
