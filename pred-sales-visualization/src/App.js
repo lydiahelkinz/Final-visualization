@@ -10,18 +10,9 @@ import "primereact/resources/primereact.min.css";
 import "primeflex/primeflex.css"
 import { Card } from 'primereact/card';
 import { TabView, TabPanel } from 'primereact/tabview';
-
-
 import { Storage } from "aws-amplify";
 
-function Popup({ message, onClose }) {
-  return (
-    <div className="popup">
-      <p>{message}</p>
-      <button onClick={onClose}>Close</button>
-    </div>
-  );
-}
+
 
 function App({ signOut, user }  ) {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -34,19 +25,16 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-<<<<<<< HEAD
   const [showPopup, setShowPopup] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
-  
-=======
 
-  var err = "";
->>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
+    
+  
 
   const uploadFile = async () => {
+    
     console.log(user);
     try {
-<<<<<<< HEAD
       if (!fileData) {
         setErrorMessage("Please select a file before uploading.");
         setTimeout(() => setErrorMessage(""), 5000);
@@ -59,15 +47,6 @@ function App({ signOut, user }  ) {
         return;
       }
       
-=======
-
-      if (fileData.type !== "text/csv") {
-        err = "Invalid file format. Please upload a CSV file."
-        setErrorMessage(err);
-        throw new Error(err);
-      }
-
->>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
       const fileName = `${user.username}-${Math.floor(Date.now() / 1000)}#${user.attributes.email}.csv`;
       const result = await Storage.put(fileName, fileData, {
         contentType: fileData.type,
@@ -82,11 +61,7 @@ function App({ signOut, user }  ) {
     } catch (error) {
       console.error("Error:", err);
     } finally {
-<<<<<<< HEAD
       if (fileData && fileData.type === "text/csv") {
-=======
-      if (err === ""){
->>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
         setUploading(true);
         setShowUploadMessage(true); // Show the "Please wait" message
         setUploading(false);
@@ -213,6 +188,7 @@ console.error(e)
   return (
     <View className="App">
       
+      
       <div>
       <h1>Hello {user.username}</h1>
       <Button onClick={signOut}>Sign out</Button>
@@ -238,11 +214,7 @@ console.error(e)
                 </TabPanel>
                 <TabPanel header="Upload Csv Files">
                 <div>
-<<<<<<< HEAD
                 <input type="file" onChange={(e) => e.target.files && setFileData(e.target.files[0])} />
-=======
-                <input type="file" onChange={(e) => setFileData(e.target.files[0])} />
->>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
       </div>
 
       <div>
@@ -264,10 +236,6 @@ console.error(e)
 
       
                 </TabPanel>
-<<<<<<< HEAD
-=======
-            </TabView>
->>>>>>> 2f6c56ef7af0868850704648dc15d39cd67a4d92
       
             </TabView>
 
