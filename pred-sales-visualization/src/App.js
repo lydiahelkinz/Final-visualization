@@ -57,7 +57,7 @@ function App({ signOut, user }  ) {
       setFileStatus(true);
       console.log("File uploaded successfully:", result);
     } catch (error) {
-      console.error("Error:", err);
+      console.error("Error:", error);
     } finally {
       if (fileData && fileData.type === "text/csv") {
         setUploading(true);
