@@ -15,8 +15,8 @@ import { Storage } from "aws-amplify";
 
 
 function App({ signOut, user }  ) {
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fileData, setFileData] = useState();
   const [image, setImage] = useState({url:""});
   const [fileStatus, setFileStatus] = useState(false);
@@ -25,6 +25,9 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
+
 
     
   
@@ -166,9 +169,15 @@ console.error(e)
   
   
 
-  useEffect(() => {
-    listObjectsFromS3("")
-  }, []);
+    useEffect(() => {
+      listObjectsFromS3("");
+    
+      // Check if the user's email is not verified (first login)
+      if (!user.attributes.email_verified) {
+        setShowConfirmationMessage(true);
+      }
+    }, []);
+    
 
 
   return (
@@ -205,6 +214,8 @@ console.error(e)
       {errorMessage && <div style={{ color: 'red' }} className="error-message">{errorMessage}</div>}
       {showSuccessMessage && <div>File uploaded successfully</div>}
       {showUploadMessage && <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>}
+      {showConfirmationMessage && (<div className="confirmation-message"><p>Please check your email or spam folder to confirm your subscription to AWS.</p></div>)}
+
 
       
                 </TabPanel>
