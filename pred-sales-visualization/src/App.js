@@ -207,10 +207,11 @@ console.error(e)
       <div>
       <h1>Welcome to our application,<span className="blue-text">{user.username}!</span></h1>
       <Button onClick={signOut}>Sign out</Button>
-      <h1></h1>
+      <br/><br/>
        <View>{displayWelcomePopUp && (
-        <div className="popup-box">
+         <div className="popup-box">
           <div className="popup-message">
+          <h2>Subscription Request!</h2>
             Please check your email address or spam folder to confirm your AWS subscription to receive notifications from our application
           </div>
           <Button className="popup-button" onClick={closeWelcomePopUp}>
