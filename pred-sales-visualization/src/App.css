@@ -23,9 +23,43 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.blue-text {
+  color: blue; /* Couleur de texte bleu */
+}
 
 .App-link {
   color: #61dafb;
+}
+
+
+.popup-box {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.popup-message {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.popup-button {
+  background-color: #ff0000; /* Couleur de fond rouge */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.popup-button:hover {
+  background-color: #cc0000; /* Couleur de fond rouge foncé au survol */
 }
 
 @keyframes App-logo-spin {

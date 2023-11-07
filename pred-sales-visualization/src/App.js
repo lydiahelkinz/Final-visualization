@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import { Button } from 'primereact/button';
-import { useState,useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { withAuthenticator, View,AmplifyS3Image } from "@aws-amplify/ui-react";
 import { Tree } from 'primereact/tree';
 import "@aws-amplify/ui-react/styles.css";
@@ -10,13 +10,15 @@ import "primereact/resources/primereact.min.css";
 import "primeflex/primeflex.css"
 import { Card } from 'primereact/card';
 import { TabView, TabPanel } from 'primereact/tabview';
-
-
 import { Storage } from "aws-amplify";
 
-function App({ signOut, user }  ) {
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+
+
+
+function App({ signOut, user }  ) {
+
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fileData, setFileData] = useState();
   const [image, setImage] = useState({url:""});
   const [fileStatus, setFileStatus] = useState(false);
@@ -25,20 +27,24 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  var err = "";
-  
+  const [displayWelcomePopUp, setDisplayWelcomePopUp] = useState(false);  
 
   const uploadFile = async () => {
+
     console.log(user);
     try {
-
-      if (fileData.type !== "text/csv") {
-        err = "Invalid file format. Please upload a CSV file."
-        setErrorMessage(err);
-        throw new Error(err);
+      if (!fileData) {
+        setErrorMessage("Please select a file before uploading.");
+        setTimeout(() => setErrorMessage(""), 5000);
+        return;
       }
-
+  
+      if (!fileData.type || fileData.type !== "text/csv") {
+        setErrorMessage("Invalid file format. Please upload a CSV file.");
+        setTimeout(() => setErrorMessage(""), 10000);
+        return;
+      }
+      
       const fileName = `${user.username}-${Math.floor(Date.now() / 1000)}#${user.attributes.email}.csv`;
       const result = await Storage.put(fileName, fileData, {
         contentType: fileData.type,
@@ -51,9 +57,9 @@ function App({ signOut, user }  ) {
       setFileStatus(true);
       console.log("File uploaded successfully:", result);
     } catch (error) {
-      console.error("Error:", err);
+      console.error("Error:", error);
     } finally {
-      if (err === ""){
+      if (fileData && fileData.type === "text/csv") {
         setUploading(true);
         setShowUploadMessage(true); // Show the "Please wait" message
         setUploading(false);
@@ -119,7 +125,7 @@ function App({ signOut, user }  ) {
   }
   
   
-  
+
   
 
   async function listObjectsFromS3(folderName) {
@@ -156,21 +162,62 @@ console.error(e)
         }
       }
     }
+    
+
 
   
   
 
-  useEffect(() => {
-    listObjectsFromS3("")
-  }, []);
+    useEffect(() => {
+      listObjectsFromS3("");
+    
+    }, []);
+    
 
+    useEffect(() => {
+      // Récupérez le nom d'utilisateur actuel.
+      const username = user.username;
+  
+      // Vérifiez si l'utilisateur a déjà vu la pop-up de bienvenue.
+      const hasSeenWelcomePopUp = localStorage.getItem(`seenWelcomePopUp_${username}`);
+  
+      // Si l'utilisateur n'a pas encore vu la pop-up de bienvenue, affichez-la.
+      if (!hasSeenWelcomePopUp) {
+        setDisplayWelcomePopUp(true);
+  
+        // Marquez la pop-up comme vue pour cet utilisateur.
+        localStorage.setItem(`seenWelcomePopUp_${username}`, true);
+      }
+    }, [user]);
+    
+    const closeWelcomePopUp = () => {
+      setDisplayWelcomePopUp(false);
+    };
+    
 
   return (
     <View className="App">
       
+      
       <div>
-      <h1>Hello {user.username}</h1>
+      <h1>Welcome to our application,<span className="blue-text">{user.username}!</span></h1>
       <Button onClick={signOut}>Sign out</Button>
+      <br/><br/>
+       <View>{displayWelcomePopUp && (
+         <div className="popup-box">
+          <div className="popup-message">
+          <h2>Subscription Request!</h2>
+            Please check your email address or spam folder to confirm your AWS subscription to receive notifications from our application
+          </div>
+          <Button className="popup-button" onClick={closeWelcomePopUp}>
+          Dismiss
+          </Button>
+        </div>
+      )}</View>
+      
+
+
+      
       </div>
       <TabView>
                 <TabPanel header="Show images">
@@ -187,7 +234,7 @@ console.error(e)
                 </TabPanel>
                 <TabPanel header="Upload Csv Files">
                 <div>
-                <input type="file" onChange={(e) => setFileData(e.target.files[0])} />
+                <input type="file" onChange={(e) => e.target.files && setFileData(e.target.files[0])} />
       </div>
 
       <div>
@@ -197,20 +244,14 @@ console.error(e)
       </div>
       {errorMessage && <div style={{ color: 'red' }} className="error-message">{errorMessage}</div>}
       {showSuccessMessage && <div>File uploaded successfully</div>}
-      {showUploadMessage && (
-          <hr/>
-          & 
-          <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>
-          & 
-          <p>You will get an email in this concern in case you already subscribed to our notification server via the email you got after the registration</p>
-          &
-          <p>Otherwise, visit the website later to see the results.</p>
-        )}
+      {showUploadMessage && <div>The results will be ready in a few minutes. <b>Thank you for your patience!</b>.</div>}
+      
+
 
       
                 </TabPanel>
-            </TabView>
       
+            </TabView>
 
       
       
