@@ -27,12 +27,7 @@ function App({ signOut, user }  ) {
   const [uploading, setUploading] = useState(false);
   const [showUploadMessage, setShowUploadMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [displayWelcomePopUp, setDisplayWelcomePopUp] = useState(false);
-
-  
-
-    
-  
+  const [displayWelcomePopUp, setDisplayWelcomePopUp] = useState(false);  
 
   const uploadFile = async () => {
 
